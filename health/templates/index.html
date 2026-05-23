@@ -1,0 +1,424 @@
+{% extends 'user_navigation.html' %}
+{% load static %}
+{% block body %}
+<style>
+.profile-widget {
+    transition: 0.3s;
+}
+.profile-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+</style>
+			<!-- /Header -->
+{% if doc %}
+<section class="section section-specialities">
+				<div class="container-fluid">
+					<div class="section-header text-center">
+						<h2 style="color:green;font-family:roman">Searched Doctors</h2><hr>
+<div class="row">
+
+		{% for i in doc %}
+	<div class="col-md-3" style="border:solid 1px lightgray;border-radius:8px">
+								<!-- Doctor Widget -->
+
+								<div class="profile-widget">
+									<div class="doc-img">
+										<a href="#">
+											{% if i.image %}
+											<img class="img-fluid" alt="User Image" src="{{i.image.url}}" style="width:200px;">
+											{% endif %}
+										</a>
+									</div>
+									<div class="pro-content">
+										<h3 class="title">
+											<a href="javascript:void(0)">Dr.{{i.user.first_name}} {{i.user.last_name}}</a>
+											<i class="fas fa-check-circle verified"></i>
+										</h3>
+										<p class="speciality">{{i.specialist}}</p>
+
+										<ul class="available-info">
+											<li>
+												<i class="fas fa-phone"></i>
+												 {% comment %} {{i.mobile}} {% endcomment %}
+												 <span class="contact-mask" data-contact="{{i.mobile}}">
+						******{{i.mobile|slice:"-4:" }}
+					</span>
+					<i class="fa fa-eye toggle-contact" style="cursor:pointer;margin-left:10px;"></i>
+											</li>
+											<li>
+												<i class="fas fa-map-marker-alt"></i> {{i.address}} ,{{i.cl_address}}
+											</li>
+											<li>
+												<i class="fas fa-map-marker-alt"></i> {{i.clinic}}
+											</li>
+											<li>
+												<i class="far fa-clock"></i> Available on {{i.daystiming}},<br> {{i.timing}}
+											</li>
+											<li>
+												<i class="far fa-money-bill-alt"></i> {{i.price}} (Per hour charges)
+												<i class="fas fa-info-circle" data-toggle="tooltip" title="Lorem Ipsum"></i>
+											</li>
+										</ul>
+										<div class="row row-sm">
+											<div class="col-6">
+												<a href="{% url 'login' %}" class="btn view-btn">View Profile</a>
+											</div>
+											<div class="col-6">
+												<a href="{% url 'login' %}" class="btn book-btn">Book Now</a>
+											</div>
+										</div>
+									</div>
+								</div></div>
+								{% endfor %}
+
+</div>
+
+
+
+					</div>
+				</div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // EMAIL TOGGLE
+    document.querySelectorAll(".toggle-email").forEach(function (eye) {
+        eye.addEventListener("click", function () {
+            let span = this.previousElementSibling;
+            let original = span.getAttribute("data-email");
+
+            if (span.innerText.includes("*")) {
+                span.innerText = original;
+                this.classList.remove("fa-eye");
+                this.classList.add("fa-eye-slash");
+            } else {
+                span.innerText = original.substring(0,3) + "****@****";
+                this.classList.remove("fa-eye-slash");
+                this.classList.add("fa-eye");
+            }
+        });
+    });
+
+    // CONTACT TOGGLE
+    document.querySelectorAll(".toggle-contact").forEach(function (eye) {
+        eye.addEventListener("click", function () {
+            let span = this.previousElementSibling;
+            let original = span.getAttribute("data-contact");
+
+            if (span.innerText.includes("*")) {
+                span.innerText = original;
+                this.classList.remove("fa-eye");
+                this.classList.add("fa-eye-slash");
+            } else {
+                span.innerText = "******" + original.slice(-4);
+                this.classList.remove("fa-eye-slash");
+                this.classList.add("fa-eye");
+            }
+        });
+    });
+
+});
+</script>
+{% else %}
+
+
+			<!-- Home Banner -->
+			<section class="section section-search">
+				<div class="container-fluid">
+					<div class="banner-wrapper">
+						<div class="banner-header text-center">
+							<h1>Search Doctor, Make an Appointment</h1>
+							<p>Find trusted doctors, book appointments instantly, and manage your healthcare online with ease.</p>
+						</div>
+                         
+						<!-- Search -->
+						<div class="search-box">
+							<form action="" method="post" enctype="multipart/form-data">
+								{% csrf_token %}
+								<div class="form-group search-location">
+									<input type="text" class="form-control" placeholder="Search Location" name="loc">
+									<span class="form-text">Based on your Location</span>
+								</div>
+								<div class="form-group search-info">
+									<input type="text" class="form-control" placeholder="Search Doctors by specialization" name="spe">
+									<span class="form-text">Ex : Dental or Sugar Check up etc</span>
+								</div>
+								<button type="submit" class="btn btn-primary search-btn"><i class="fas fa-search"></i> <span>Search</span></button>
+							</form>
+						</div>
+						<!-- /Search -->
+						
+					</div>
+				</div>
+			</section>
+			<!-- /Home Banner -->
+			<!-- Clinic and Specialities -->
+			<section class="section section-specialities">
+				<div class="container-fluid">
+					<div class="section-header text-center">
+						<h2>Explore Medical Specialties</h2>
+						<p class="sub-title">Browse top-rated specialists across multiple medical fields and connect with experienced healthcare professionals near you.</p>
+					</div>
+					<div class="row justify-content-center">
+						<div class="col-md-9">
+							<!-- Slider -->
+							<div class="specialities-slider slider">
+							
+								<!-- Slider Item -->
+								<div class="speicality-item text-center">
+									<div class="speicality-img">
+										<img src="{% static 'user/img/specialities/specialities-01.png' %}" class="img-fluid" alt="Speciality">
+										<span><i class="fa fa-circle" aria-hidden="true"></i></span>
+									</div>
+									<p>Urology</p>
+								</div>	
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="speicality-item text-center">
+									<div class="speicality-img">
+										<img src="{% static 'user/img/specialities/specialities-02.png' %}" class="img-fluid" alt="Speciality">
+										<span><i class="fa fa-circle" aria-hidden="true"></i></span>
+									</div>
+									<p>Neurology</p>	
+								</div>							
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="speicality-item text-center">
+									<div class="speicality-img">
+										<img src="{% static 'user/img/specialities/specialities-03.png' %}" class="img-fluid" alt="Speciality">
+										<span><i class="fa fa-circle" aria-hidden="true"></i></span>
+									</div>	
+									<p>Orthopedic</p>	
+								</div>							
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="speicality-item text-center">
+									<div class="speicality-img">
+										<img src="{% static 'user/img/specialities/specialities-04.png' %}" class="img-fluid" alt="Speciality">
+										<span><i class="fa fa-circle" aria-hidden="true"></i></span>
+									</div>	
+									<p>Cardiologist</p>	
+								</div>							
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="speicality-item text-center">
+									<div class="speicality-img">
+										<img src="{% static 'user/img/specialities/specialities-05.png' %}" class="img-fluid" alt="Speciality">
+										<span><i class="fa fa-circle" aria-hidden="true"></i></span>
+									</div>	
+									<p>Dentist</p>
+								</div>							
+								<!-- /Slider Item -->
+								
+							</div>
+							<!-- /Slider -->
+							
+						</div>
+					</div>
+				</div>   
+			</section>	 
+			<!-- Clinic and Specialities -->
+
+
+
+
+			<!-- Popular Section -->
+			<section class="section section-doctor">
+				<div class="container-fluid">
+				   <div class="row">
+						<div class="col-lg-4">
+							<div class="section-header ">
+								<h2>Book Trusted Doctors</h2>
+								<p>Schedule appointments with verified healthcare professionals quickly and securely. </p>
+							</div>
+							<div class="about-content">
+								<p>Our platform connects patients with qualified doctors, hospitals, and medical stores. 
+Easily search by specialization or location and book appointments in just a few clicks.</p>					
+								<a href="javascript:;">Read More..</a>
+							</div>
+						</div>
+
+						<div class="col-lg-8">
+							<div class="doctor-slider slider">
+							{% for i in data %}
+								<!-- Doctor Widget -->
+								<div class="profile-widget">
+									<div class="doc-img">
+										<a href="javascript:void(0)">
+											{% if i.image %}
+											<img class="img-fluid" alt="User Image" src="{{i.image.url}}" style="width:200px;height:150px">
+											{% endif %}
+										</a>
+										<a href="javascript:void(0)" class="fav-btn">
+											<i class="far fa-bookmark"></i>
+										</a>
+									</div>
+									<div class="pro-content">
+										<h3 class="title">
+											<a href="javascript:void(0)">Dr.{{i.user.first_name}} {{i.user.last_name}}</a>
+											<i class="fas fa-check-circle verified"></i>
+										</h3>
+										<p class="speciality">{{i.specialist}}</p>
+										<div class="rating">
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<span class="d-inline-block average-rating">(17)</span>
+										</div>
+										<ul class="available-info">
+											<li>
+												<i class="fas fa-phone"></i> 
+												{% comment %} {{i.mobile}} {% endcomment %}
+							<span class="contact-mask" data-contact="{{ i.mobile }}">
+        ******{{i.mobile|slice:"-4:" }}
+    </span>
+    <i class="fa fa-eye toggle-contact" style="cursor:pointer;margin-left:10px;"></i>
+
+											</li>
+											<li>
+												<i class="fas fa-map-marker-alt"></i> {{i.address}} ,{{i.cl_address}}
+											</li>
+											<li>
+												<i class="fas fa-map-marker-alt"></i> {{i.clinic}}
+											</li>
+											<li>
+												<i class="far fa-clock"></i> Available on {{i.daystiming}}, {{i.timing}}
+											</li>
+											<li>
+												<i class="far fa-money-bill-alt"></i> {{i.price}} (Per hour charges)
+												<i class="fas fa-info-circle" data-toggle="tooltip" title="Lorem Ipsum"></i>
+											</li>
+										</ul>
+										<div class="row row-sm">
+											<div class="col-6">
+												<a href="{% url 'login' %}" class="btn view-btn">View Profile</a>
+											</div>
+											<div class="col-6">
+												<a href="{% url 'login' %}" class="btn book-btn">Book Now</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+
+							</div>
+						</div>
+				   </div>
+				</div>
+			</section>
+			<!-- /Popular Section -->
+		   
+		   <!-- Availabe Features -->
+		   <section class="section section-features">
+				<div class="container-fluid">
+				   <div class="row">
+						<div class="col-md-5 features-img">
+							<img src="{% static 'user/img/features/feature.png' %}" class="img-fluid" alt="Feature">
+						</div>
+						<div class="col-md-7">
+							<div class="section-header">	
+								<h2 class="mt-2">Healthcare Services & Facilities</h2>
+								<p>We provide modern healthcare services including consultation booking, digital prescriptions, medical records storage, and secure billing management. </p>
+							</div>	
+							<div class="features-slider slider">
+								<!-- Slider Item -->
+								<div class="feature-item text-center">
+									<img src="{% static 'user/img/features/feature-01.jpg' %}" class="img-fluid" alt="Feature">
+									<p>Patient Ward</p>
+								</div>
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="feature-item text-center">
+									<img src="{% static 'user/img/features/feature-02.jpg' %}" class="img-fluid" alt="Feature">
+									<p>Test Room</p>
+								</div>
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="feature-item text-center">
+									<img src="{% static 'user/img/features/feature-03.jpg' %}" class="img-fluid" alt="Feature">
+									<p>ICU</p>
+								</div>
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="feature-item text-center">
+									<img src="{% static 'user/img/features/feature-04.jpg' %}" class="img-fluid" alt="Feature">
+									<p>Laboratory</p>
+								</div>
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="feature-item text-center">
+									<img src="{% static 'user/img/features/feature-05.jpg' %}" class="img-fluid" alt="Feature">
+									<p>Operation</p>
+								</div>
+								<!-- /Slider Item -->
+								
+								<!-- Slider Item -->
+								<div class="feature-item text-center">
+									<img src="{% static 'user/img/features/feature-06.jpg' %}" class="img-fluid" alt="Feature">
+									<p>Medical</p>
+								</div>
+								<!-- /Slider Item -->
+							</div>
+						</div>
+				   </div>
+				</div>
+			</section>		
+			<!-- Availabe Features -->
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // EMAIL TOGGLE
+    document.querySelectorAll(".toggle-email").forEach(function (eye) {
+        eye.addEventListener("click", function () {
+            let span = this.previousElementSibling;
+            let original = span.getAttribute("data-email");
+
+            if (span.innerText.includes("*")) {
+                span.innerText = original;
+                this.classList.remove("fa-eye");
+                this.classList.add("fa-eye-slash");
+            } else {
+                span.innerText = original.substring(0,3) + "****@****";
+                this.classList.remove("fa-eye-slash");
+                this.classList.add("fa-eye");
+            }
+        });
+    });
+
+    // CONTACT TOGGLE
+    document.querySelectorAll(".toggle-contact").forEach(function (eye) {
+        eye.addEventListener("click", function () {
+            let span = this.previousElementSibling;
+            let original = span.getAttribute("data-contact");
+
+            if (span.innerText.includes("*")) {
+                span.innerText = original;
+                this.classList.remove("fa-eye");
+                this.classList.add("fa-eye-slash");
+            } else {
+                span.innerText = "******" + original.slice(-4);
+                this.classList.remove("fa-eye-slash");
+                this.classList.add("fa-eye");
+            }
+        });
+    });
+
+});
+</script>
+			
+		{% endif %}
+			<!-- Footer -->
+{% endblock %}
