@@ -1,0 +1,44 @@
+{% extends 'patient/sidebar.html' %}
+{% block b %}
+{% load static %}
+
+<h2 style="font-family:roman;color:green" align="center" class="card">Upload Health Report</h2>
+<div class="card">
+    {% for i in messages %}
+        <p style="color:{% if 'success' in i.tags %}green{% else %}red{% endif %}">{{ i }}</p>
+    {% endfor %}
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label><strong>Report Title</strong></label>
+                <input type="text" name="title" class="form-control" placeholder="e.g. Blood Test Report - May 2026" required>
+            </div>
+            <div class="form-group">
+                <label><strong>Description <span style="font-weight:normal">(optional)</span></strong></label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Brief notes about this report..."></textarea>
+            </div>
+            <div class="form-group">
+                <label><strong>Link to Appointment <span style="font-weight:normal">(optional)</span></strong></label>
+                <select name="appointment_id" class="form-control">
+                    <option value="">-- Not linked to any appointment --</option>
+                    {% for appt in appointments %}
+                        <option value="{{ appt.id }}">
+                            Dr. {{ appt.doctor.user.first_name }} {{ appt.doctor.user.last_name }} — {{ appt.a_date }}{% if appt.a_timing %} at {{ appt.a_timing }}{% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+                <small class="text-muted">Linking a report lets the relevant doctor see it in their patient dashboard.</small>
+            </div>
+            <div class="form-group">
+                <label><strong>Upload File</strong> <span class="text-muted">(PDF, JPG, PNG accepted)</span></label>
+                <input type="file" name="report_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp" required>
+            </div>
+            <div class="submit-section text-center">
+                <button type="submit" class="btn btn-primary submit-btn">Upload Report</button>
+                <a href="{% url 'my_health_reports' %}" class="btn btn-secondary ml-2">View My Reports</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

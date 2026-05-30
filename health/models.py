@@ -141,14 +141,49 @@ class Prescription(models.Model):
     def __str__(self):
         return self.appoint.doctor.user.username+" "+self.appoint.patient.user.username
 
+# class Medical_Record(models.Model):
+#     appoint = models.ForeignKey(Appointment,on_delete=models.CASCADE,null=True,blank=True)
+#     date = models.DateField(null=True,blank=True)
+#     disc = models.CharField(max_length=100,null=True,blank=True)
+#     file = models.FileField(null=True,blank=True)
+
+#     def __str__(self):
+#         return self.appoint.doctor.user.username+" "+self.appoint.patient.user.username
+
 class Medical_Record(models.Model):
-    appoint = models.ForeignKey(Appointment,on_delete=models.CASCADE,null=True,blank=True)
-    date = models.DateField(null=True,blank=True)
-    disc = models.CharField(max_length=100,null=True,blank=True)
-    file = models.FileField(null=True,blank=True)
+    patient = models.ForeignKey(
+        Patient,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    appoint = models.ForeignKey(
+        Appointment,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    disc = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+    file = models.FileField(
+        upload_to='medical_records/',
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
-        return self.appoint.doctor.user.username+" "+self.appoint.patient.user.username
+        return self.appoint.doctor.user.username + " " + self.appoint.patient.user.username
 
 class Billing_Record(models.Model):
     appoint = models.ForeignKey(Appointment,on_delete=models.CASCADE,null=True,blank=True)

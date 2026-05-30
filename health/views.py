@@ -7,8 +7,44 @@ import datetime
 import uuid
 import random
 from django.db.models import Avg,Sum,Count,Min,Max
+from .models import Medical_Record, Appointment
+from django.contrib import messages
 
 from datetime import timedelta
+
+def patient_add_medical(request, pid):
+
+    data = Appointment.objects.get(id=pid)
+
+    if request.method == "POST":
+
+        m = request.POST.get('desc')
+        d = request.POST.get('date')
+        p = request.FILES.get('file')
+
+        patient = Patient.objects.get(
+            user=request.user
+        )
+
+        Medical_Record.objects.create(
+            patient=patient,
+            appoint=data,
+            disc=m,
+            file=p,
+            date=d
+        )
+
+        messages.success(
+            request,
+            'Health Report Uploaded Successfully'
+        )
+
+        return redirect('all_doctor_appointment')
+
+    return render(
+        request,
+        'patient/add_medical.html'
+    )
 
 # Create your views here.
 def access(user):
@@ -1094,16 +1130,39 @@ def doc_patient_dashboard(request,pid):
     if not access(request.user):
         messages.success(request,'Update Your Profile and Wait for Verification')
         return redirect('doctor_profile')
+
     data = Patient.objects.get(id=pid)
     data2 = Doctor.objects.get(user=request.user)
-    pat = Appointment.objects.filter(patient = data)
-    pat2 = Appointment.objects.filter(patient = data,doctor=data2,a_date = datetime.date.today()).first()
+
+    pat = Appointment.objects.filter(patient=data)
+
+    reports = Medical_Record.objects.filter(
+        patient=data
+    ).order_by('-date')
+
+    pat2 = Appointment.objects.filter(
+        patient=data,
+        doctor=data2,
+        a_date=datetime.date.today()
+    ).first()
+
     if not pat2:
         pat2 = 0
     else:
         pat2 = pat2.id
-    d = {'data': pat,'pat':data,'pat2':pat2}
-    return render(request,'doctor/doc_patient_dashboard.html',d)
+
+    d = {
+        'data': pat,
+        'pat': data,
+        'pat2': pat2,
+        'reports': reports
+    }
+
+    return render(
+        request,
+        'doctor/doc_patient_dashboard.html',
+        d
+    )
 
 
 def add_presc(request,pid):
