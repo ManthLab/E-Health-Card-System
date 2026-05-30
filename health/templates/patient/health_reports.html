@@ -1,0 +1,129 @@
+{% extends 'patient/sidebar.html' %}
+{% block b %}
+
+<div class="card">
+
+    <div class="card-header">
+        <h3>Upload Health Report</h3>
+    </div>
+
+    <div class="card-body">
+
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date"
+                       name="date"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text"
+                       name="desc"
+                       class="form-control"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Select Report</label>
+                <input type="file"
+                       name="file"
+                       class="form-control"
+                       required>
+            </div>
+
+            <br>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Upload Report
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+    <div class="card-header">
+        <h3>My Health Reports</h3>
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for report in reports %}
+
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ report.date }}</td>
+                        <td>{{ report.disc }}</td>
+
+                        <td>
+
+                            <a href="{{ report.file.url }}"
+                               target="_blank"
+                               class="btn btn-info btn-sm">
+                                View
+                            </a>
+
+                            <a href="{% url 'delete_health_report' report.id %}"
+                               onclick="return confirm('Delete this report?')"
+                               class="btn btn-danger btn-sm">
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            No Reports Uploaded Yet
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

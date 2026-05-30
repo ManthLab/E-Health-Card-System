@@ -46,6 +46,54 @@ def patient_add_medical(request, pid):
         'patient/add_medical.html'
     )
 
+def health_reports(request):
+
+    patient = Patient.objects.get(
+        user=request.user
+    )
+
+    reports = Medical_Record.objects.filter(
+        patient=patient
+    ).order_by('-id')
+
+    if request.method == "POST":
+
+        Medical_Record.objects.create(
+            patient=patient,
+            date=request.POST.get('date'),
+            disc=request.POST.get('desc'),
+            file=request.FILES.get('file')
+        )
+
+        messages.success(
+            request,
+            "Report Uploaded Successfully"
+        )
+
+        return redirect('health_reports')
+
+    return render(
+        request,
+        'patient/health_reports.html',
+        {
+            'reports': reports
+        }
+    )
+
+def delete_health_report(request, pid):
+
+    report = Medical_Record.objects.get(id=pid)
+
+    if report.patient.user == request.user:
+        report.delete()
+
+    messages.success(
+        request,
+        "Report Deleted Successfully"
+    )
+
+    return redirect('health_reports')
+
 # Create your views here.
 def access(user):
     try:

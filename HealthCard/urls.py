@@ -59,6 +59,8 @@ urlpatterns = [
     path('all_doctor_appointment',all_doctor_appointment,name="all_doctor_appointment"),
     path('all_hospital_appointment',all_hospital_appointment,name="all_hospital_appointment"),
     path('patient_add_medical<int:pid>',patient_add_medical,name='patient_add_medical'),
+    path('health_reports',health_reports,name='health_reports'),
+    path('delete_health_report/<int:pid>/',delete_health_report,name='delete_health_report'),
 
 #Doctor Url
     path('doctor_dashboard', doctor_dashboard,name="doctor_dashboard"),
