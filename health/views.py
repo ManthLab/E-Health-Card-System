@@ -12,6 +12,28 @@ from django.contrib import messages
 
 from datetime import timedelta
 
+def doctor_view_patient_reports(request, pid):
+    if not access(request.user):
+        messages.success(request,'Update Your Profile and Wait for Verification')
+        return redirect('doctor_profile')
+
+    patient = Patient.objects.get(id=pid)
+
+    reports = Medical_Record.objects.filter(
+        patient=patient
+    ).order_by('-id')
+
+    d = {
+        'patient': patient,
+        'reports': reports
+    }
+
+    return render(
+        request,
+        'doctor/view_patient_reports.html',
+        d
+    )
+
 def patient_add_medical(request, pid):
 
     data = Appointment.objects.get(id=pid)
@@ -129,7 +151,7 @@ def access(user):
 def patient_dashboard(request):
     pat = Appointment.objects.filter(patient=Patient.objects.get(user=request.user))
     patient = Patient.objects.get(user=request.user)
-    medicalrecords = Medical_Record.objects.filter(appoint__patient=patient)
+    medicalrecords = Medical_Record.objects.filter(patient=patient).order_by('-id')
     d = {'data':pat,'medicalrecords': medicalrecords}
     return render(request,'patient/patient_dashboard.html',d)
 
@@ -1022,24 +1044,68 @@ def medical_status(request,pid):
     messages.success(request,'Selected Medical granted to Permission')
     return redirect('admin_view_medicals')
 
+# def doctor_patient_search_by_id(request):
+#     if not access(request.user):
+#         messages.success(request,'Update Your Profile and Wait for Verification')
+#         return redirect('doctor_profile')
+#     data=""
+#     i=""
+#     appointment=""
+#     hos_appointment=""
+#     if request.method=="POST":
+#         i=request.POST['uid']
+#         try:
+#             data=Patient.objects.get(health_uid=i)
+#             appointment = Appointment.objects.filter(patient=data)
+#             hos_appointment = Hospital_Appointment.objects.filter(patient=data)
+#         except:
+#             messages.success(request,'Invalid Card Number')
+#     d={'data':data,'i':i,'appointment':appointment,'hos_appointment':hos_appointment}
+#     return render(request,'doctor/doctor_patient_search_by_id.html',d)
+
 def doctor_patient_search_by_id(request):
     if not access(request.user):
         messages.success(request,'Update Your Profile and Wait for Verification')
         return redirect('doctor_profile')
-    data=""
-    i=""
-    appointment=""
-    hos_appointment=""
-    if request.method=="POST":
-        i=request.POST['uid']
+
+    data = ""
+    i = ""
+    appointment = ""
+    hos_appointment = ""
+    reports = ""
+
+    if request.method == "POST":
+        i = request.POST['uid']
+
         try:
-            data=Patient.objects.get(health_uid=i)
+            data = Patient.objects.get(health_uid=i)
+
             appointment = Appointment.objects.filter(patient=data)
-            hos_appointment = Hospital_Appointment.objects.filter(patient=data)
+
+            hos_appointment = Hospital_Appointment.objects.filter(
+                patient=data
+            )
+
+            reports = Medical_Record.objects.filter(
+                patient=data
+            ).order_by('-id')
+
         except:
             messages.success(request,'Invalid Card Number')
-    d={'data':data,'i':i,'appointment':appointment,'hos_appointment':hos_appointment}
-    return render(request,'doctor/doctor_patient_search_by_id.html',d)
+
+    d = {
+        'data': data,
+        'i': i,
+        'appointment': appointment,
+        'hos_appointment': hos_appointment,
+        'reports': reports
+    }
+
+    return render(
+        request,
+        'doctor/doctor_patient_search_by_id.html',
+        d
+    )
 
 def admin_patient_search_by_id(request):
     data=""
@@ -1255,7 +1321,7 @@ def add_medical(request,pid):
         m = request.POST['desc']
         d = request.POST['date']
         p = request.FILES['file']
-        Medical_Record.objects.create(appoint=data,disc=m,file=p,date=d)
+        Medical_Record.objects.create(patient=data.patient,appoint=data,disc=m,file=p,date=d)
         messages.success(request,'Medical Record Added Successfully')
         return redirect('doc_patient_dashboard',data.patient.id)
 

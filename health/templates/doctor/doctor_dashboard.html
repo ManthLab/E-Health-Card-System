@@ -74,8 +74,9 @@
                                                         <th></th>
                                                     </tr>
                                                     </thead>
-                                                    {% for i in up %}
                                                     <tbody>
+                                                    {% for i in up %}
+                                                    
                                                     <tr>
                                                         <td>
                                                             {% comment %} <h2 class="table-avatar">
@@ -130,11 +131,11 @@
                                                             </div>
                                                                  </td>
 
-                                                            </div>
-                                                        </td>
+                                                           
                                                     </tr>
-                                                    </tbody>
+                                                    
                                                     {% endfor %}
+                                                    </tbody>
                                                 </table>
                                             </div>
                                         </div>
@@ -162,18 +163,33 @@
                                                     </thead>
                                                     <tbody>
 
-                                                    <tbody>
+                                                
                                                 {% for i in today %}
                                                     <tr>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a href="#"
-                                                                   class="avatar avatar-sm mr-2"><img
-                                                                        class="avatar-img rounded-circle"
-                                                                        src="{% static 'user/img/patients/patient.jpg' %}"
-                                                                        alt="User Image"></a>
-                                                                <a href="#">{{i.patient.user.first_name}} {{i.patient.user.last_name}} <span>#{{i.id}}</span></a>
-                                                            </h2>
+    <a href="#" class="avatar avatar-sm mr-2">
+        {% if i.patient.image %}
+            <img
+                class="avatar-img rounded-circle"
+                src="{{ i.patient.image.url }}"
+                alt="Patient Image"
+            >
+        {% else %}
+            <img
+                class="avatar-img rounded-circle"
+                src="{% static 'user/img/patients/patient.jpg' %}"
+                alt="Patient Image"
+            >
+        {% endif %}
+    </a>
+
+    <a href="#">
+        {{ i.patient.user.first_name }}
+        {{ i.patient.user.last_name }}
+        <span>#{{ i.id }}</span>
+    </a>
+</h2>
                                                         </td>
                                                         <td>{{i.a_date}}
                                                         </td>
@@ -226,9 +242,6 @@
             </div>
         </div>
 
-    </div>
-
-</div>
 <!-- /Page Content -->
 
 {% endblock %}
